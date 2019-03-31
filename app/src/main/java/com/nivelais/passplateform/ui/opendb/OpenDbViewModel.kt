@@ -56,5 +56,4 @@ class OpenDbViewModel: ViewModel() {
         EXPLORER,
         EXIT
     }
-
 }

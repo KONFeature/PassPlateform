@@ -1,12 +1,17 @@
 package com.nivelais.passplateform.ui.opendb
 
+import android.app.Activity
 import android.content.Intent
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.Operation
+import androidx.work.WorkManager
 import com.nivelais.passplateform.App
 import com.nivelais.passplateform.utils.Provider
+import com.nivelais.passplateform.workers.FileWorker
+import java.util.*
+import java.util.concurrent.Executor
 
 class ProvidersViewModel: ViewModel() {
 
@@ -15,6 +20,12 @@ class ProvidersViewModel: ViewModel() {
 
     // Live data representing an intent to launch
     val intentToLaunch = MutableLiveData<Intent>()
+
+    // Live data representing the current state of the view
+    val state = MutableLiveData<State>()
+
+    // Current file worker id
+    var workerId: UUID? = null
 
     /**
      * Function used to get the providers from the view
@@ -50,6 +61,28 @@ class ProvidersViewModel: ViewModel() {
         }
     }
 
+    /**
+     * When we get the result of ur launched intent
+     */
+    fun intentResult(resultCode: Int, resultData: Intent?) {
+        if (resultCode != Activity.RESULT_OK || resultData?.data == null) {
+            Log.w(App.TAG, "Error when picking a file, not blocking")
+            state.postValue(State.ERROR)
+        } else {
+            // Launch the file worker
+            Log.d(App.TAG, "Successfully picked a file with data : ${resultData.data}")
+            val fileWorker = OneTimeWorkRequestBuilder<FileWorker>().build()
+            workerId = fileWorker.id
+            WorkManager.getInstance().enqueue(fileWorker)
+            state.postValue(State.WORKER_IP)
+        }
+    }
 
-
+    /**
+     * The state of the app
+     */
+    enum class State {
+        ERROR,
+        WORKER_IP
+    }
 }

@@ -11,7 +11,7 @@
 
     <!-- Provider fragment-->
     <string name="lbl_choose_provider">Choose the keepass database provider</string>
-    <string name="lbl_dialog_pick_file_error">You didn\'t pick a file, or pick an invalid keepass file. Do you want to try again ?</string>
+    <string name="lbl_dialog_pick_file_error">You didn\'t pick a file, or pick an invalid keepass file.</string>
 
     <!-- Providers-->
     <string name="provider_filesystem">File System</string>
