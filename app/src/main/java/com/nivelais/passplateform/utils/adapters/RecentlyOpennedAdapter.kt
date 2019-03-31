@@ -1,0 +1,43 @@
+package com.nivelais.passplateform.utils.adapters
+
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.nivelais.passplateform.data.local.entities.PassDatabase
+import com.nivelais.passplateform.R
+import kotlinx.android.synthetic.main.item_recently_openned_db.view.*
+
+class RecentlyOpennedAdapter(
+    val databases: ArrayList<PassDatabase>,
+    private val context: Context
+) : RecyclerView.Adapter<RecentlyOpennedAdapter.RecentlyOpennedViewHolder>() {
+
+    // Create view holder
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        RecentlyOpennedViewHolder(
+            LayoutInflater.from(context).inflate(
+                R.layout.item_recently_openned_db,
+                parent,
+                false
+            )
+        )
+
+    // Get item number
+    override fun getItemCount() = databases.size
+
+    // Bind the view holder
+    override fun onBindViewHolder(holder: RecentlyOpennedViewHolder, position: Int) {
+        holder.dbName?.text = databases[position].name
+        holder.dbProvider?.text = databases[position].provider
+        holder.dbPath?.text = databases[position].path
+    }
+
+    // View Holder for this adapter
+    inner class RecentlyOpennedViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+        val dbName = view.text_view_db_name
+        val dbProvider = view.text_view_db_provider
+        val dbPath = view.text_view_db_path
+    }
+}
