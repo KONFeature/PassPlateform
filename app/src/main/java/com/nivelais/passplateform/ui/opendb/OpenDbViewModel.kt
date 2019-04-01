@@ -1,59 +1,88 @@
 package com.nivelais.passplateform.ui.opendb
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.nivelais.passplateform.data.local.entities.PassDatabase
-import com.nivelais.passplateform.data.repositories.PassDatabaseRepository
+import android.app.Activity
+import android.content.Intent
+import android.util.Log
+import androidx.lifecycle.*
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.Operation
+import androidx.work.WorkManager
+import com.nivelais.passplateform.App
+import com.nivelais.passplateform.utils.Provider
+import com.nivelais.passplateform.workers.FileWorker
+import java.util.*
+import java.util.concurrent.Executor
 
 class OpenDbViewModel: ViewModel() {
 
-    // The current activity state
-    private val state = MutableLiveData<State>(State.START)
+    // Live data of all available providers
+    private val providers = MutableLiveData<List<Provider>>()
 
-    // Last openned password databases
-    private val databases = MutableLiveData<List<PassDatabase>>()
+    // Live data representing an intent to launch
+    val intentToLaunch = MutableLiveData<Intent>()
+
+    // Live data representing the current state of the view
+    val state = MutableLiveData<State>()
+
+    // Current file worker id
+    var workerId: UUID? = null
 
     /**
-     * Return the current state of the activity
+     * Function used to get the providers from the view
      */
-    fun getState(): LiveData<State> = state
-
-    /**
-     * Fetch the latest open pass database
-     */
-    fun getDatabases() : LiveData<List<PassDatabase>> {
-        // Init if it wasn't done yet
-        databases.value?:let{
-            databases.postValue(PassDatabaseRepository.getRecentlyOpenned())
+    fun getProviders() : LiveData<List<Provider>> {
+        providers.value?:let {
+            providers.postValue(Provider.values().toList())
         }
 
-        return databases
+        return providers
     }
 
     /**
-     * Called when a user click on open database btn
+     * Function called when a user as choosen a provider
      */
-    fun clickOpenDb() {
-        state.value?.let { currentState ->
-            if(currentState == State.START) state.postValue(State.PROVIDER)
+    fun providerChoosen(provider: Provider) {
+        Log.d(App.TAG, "Provider clicked $provider")
+        when(provider) {
+            Provider.FILE_SYSTEM -> {
+                // Post an intent that while open the file system selector and list all opennable file
+                intentToLaunch.postValue(
+                    Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                        addCategory(Intent.CATEGORY_OPENABLE)
+                        type = "*/*"
+                    })
+            }
+            Provider.GDRIVE -> {
+
+            }
+            else -> {
+                Log.w(App.TAG, "Unknown provider choosen")
+            }
         }
     }
 
     /**
-     * Called when a user press back
+     * When we get the result of ur launched intent
      */
-    fun clickBack() {
-        if(state.value != State.START)
-            state.postValue(State.START)
-        else
-            state.postValue(State.EXIT)
+    fun intentResult(resultCode: Int, resultData: Intent?) {
+        if (resultCode != Activity.RESULT_OK || resultData?.data == null) {
+            Log.w(App.TAG, "Error when picking a file, not blocking")
+            state.postValue(State.ERROR)
+        } else {
+            // Launch the file worker
+            Log.d(App.TAG, "Successfully picked a file with data : ${resultData.data}")
+            val fileWorker = OneTimeWorkRequestBuilder<FileWorker>().build()
+            workerId = fileWorker.id
+            WorkManager.getInstance().enqueue(fileWorker)
+            state.postValue(State.WORKER_IP)
+        }
     }
 
+    /**
+     * The state of the app
+     */
     enum class State {
-        START,
-        PROVIDER,
-        EXPLORER,
-        EXIT
+        ERROR,
+        WORKER_IP
     }
 }

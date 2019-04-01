@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewAnimationUtils
 import androidx.transition.Slide
 import androidx.transition.Transition
-import kotlinx.android.synthetic.main.activity_open_db.*
+import kotlinx.android.synthetic.main.activity_main.*
 
 object AnimationUtil {
 

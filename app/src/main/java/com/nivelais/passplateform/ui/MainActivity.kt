@@ -1,11 +1,8 @@
-package com.nivelais.passplateform.ui.opendb
+package com.nivelais.passplateform.ui
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.util.Log
-import android.view.Gravity
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -18,14 +15,15 @@ import com.nivelais.passplateform.App
 import com.nivelais.passplateform.BuildConfig
 import com.nivelais.passplateform.R
 import com.nivelais.passplateform.data.local.entities.PassDatabase
+import com.nivelais.passplateform.ui.opendb.OpenDbFragment
 import com.nivelais.passplateform.utils.adapters.RecentlyOpennedAdapter
-import kotlinx.android.synthetic.main.activity_open_db.*
+import kotlinx.android.synthetic.main.activity_main.*
 
-class OpenDbActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     // Define and load the view vm
     private val vm by lazy {
-        ViewModelProviders.of(this)[OpenDbViewModel::class.java]
+        ViewModelProviders.of(this)[MainViewModel::class.java]
     }
 
     // Define the scene of this view
@@ -39,10 +37,11 @@ class OpenDbActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_open_db)
+        setContentView(R.layout.activity_main)
 
         // Set version text
-        findViewById<TextView>(R.id.text_view_app_version).text = BuildConfig.VERSION_NAME
+        findViewById<TextView>(R.id.text_view_app_version).text =
+            BuildConfig.VERSION_NAME
 
         // Create ur scene
         createScene()
@@ -70,8 +69,8 @@ class OpenDbActivity : AppCompatActivity() {
      */
     private fun createScene() {
         // Create the scene
-        val startSceneView = layoutInflater.inflate(R.layout.scene_open_db_start, layout_scene_container, false)
-        val fragmentSceneView = layoutInflater.inflate(R.layout.scene_open_db_fragment, layout_scene_container, false)
+        val startSceneView = layoutInflater.inflate(R.layout.scene_main_start, layout_scene_container, false)
+        val fragmentSceneView = layoutInflater.inflate(R.layout.scene_main_fragment, layout_scene_container, false)
         startScene = Scene(layout_scene_container, startSceneView)
         fragmentScene = Scene(layout_scene_container, fragmentSceneView)
         startScene.enter()
@@ -86,22 +85,19 @@ class OpenDbActivity : AppCompatActivity() {
      * Observer for this activity state
      */
     private fun stateObserver() =
-        Observer<OpenDbViewModel.State> { state ->
+        Observer<MainViewModel.State> { state ->
             Log.d(App.TAG, "Received a new state : $state")
 
             when (state) {
-                OpenDbViewModel.State.START -> {
+                MainViewModel.State.START -> {
                     TransitionManager.go(startScene, getTransition())
                 }
-                OpenDbViewModel.State.PROVIDER -> {
+                MainViewModel.State.PROVIDER -> {
                     supportFragmentManager.beginTransaction()
-                        .add(R.id.layout_open_db_fragment, ProvidersFragment.newInstance())
-                        .commit()
-                    TransitionManager.go(fragmentScene, getTransition())
-                }
-                OpenDbViewModel.State.EXPLORER -> {
-                    supportFragmentManager.beginTransaction()
-                        .add(R.id.layout_open_db_fragment, ExplorerFragment.newInstance())
+                        .add(
+                            R.id.layout_open_db_fragment,
+                            OpenDbFragment.newInstance()
+                        )
                         .commit()
                     TransitionManager.go(fragmentScene, getTransition())
                 }

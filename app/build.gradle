@@ -46,7 +46,7 @@ dependencies {
 
 
     // Open Keepass
-    implementation ('de.slackspace:openkeepass:0.8.2') {
+    implementation('de.slackspace:openkeepass:0.8.2') {
         exclude module: 'stax'
         exclude module: 'stax-api'
         exclude module: 'xpp3'

@@ -11,27 +11,25 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.work.Operation
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.nivelais.passplateform.App
 import com.nivelais.passplateform.R
 import com.nivelais.passplateform.utils.Provider
 import com.nivelais.passplateform.utils.adapters.ProviderAdapter
-import com.nivelais.passplateform.workers.FileWorker
 import org.jetbrains.anko.*
 
-class ProvidersFragment : Fragment() {
+class OpenDbFragment : Fragment() {
 
     companion object {
-        fun newInstance() = ProvidersFragment()
+        fun newInstance() = OpenDbFragment()
 
         private const val LIVE_DATA_POSTED_INTENT = 13
     }
 
     // Define and load the view vm
     private val vm by lazy {
-        ViewModelProviders.of(this)[ProvidersViewModel::class.java]
+        ViewModelProviders.of(this)[OpenDbViewModel::class.java]
     }
 
     // Recycler view for the provider
@@ -41,7 +39,7 @@ class ProvidersFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_opendb_providers, container, false)
+        return inflater.inflate(R.layout.fragment_providers, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -90,12 +88,12 @@ class ProvidersFragment : Fragment() {
      * Return the observer for staet of this view
      */
     private fun stateObserver() =
-        Observer<ProvidersViewModel.State> { state ->
+        Observer<OpenDbViewModel.State> { state ->
             when(state) {
-                ProvidersViewModel.State.ERROR -> {
+                OpenDbViewModel.State.ERROR -> {
                     context?.alert(R.string.lbl_dialog_pick_file_error){okButton {}}?.show()
                 }
-                ProvidersViewModel.State.WORKER_IP -> {
+                OpenDbViewModel.State.WORKER_IP -> {
                     // Observe the state of the file worker
                     vm.workerId?.let { id ->
                         WorkManager.getInstance().getWorkInfoByIdLiveData(id).observe(viewLifecycleOwner, workerStateObserver())
