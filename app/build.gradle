@@ -44,9 +44,11 @@ dependencies {
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
     implementation "org.jetbrains.anko:anko-design:$anko_version"
 
+    // Recycler view animator
+    implementation 'jp.wasabeef:recyclerview-animators:3.0.0'
 
     // Open Keepass
-    implementation ('de.slackspace:openkeepass:0.8.2') {
+    implementation('de.slackspace:openkeepass:0.8.2') {
         exclude module: 'stax'
         exclude module: 'stax-api'
         exclude module: 'xpp3'

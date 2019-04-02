@@ -26,8 +26,8 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        Log.e(TAG, "Init app and db store")
         // Init ur db
+        Log.d(TAG, "Init app and db store")
         store = MyObjectBox.builder()
             .androidContext(applicationContext)
             .build()

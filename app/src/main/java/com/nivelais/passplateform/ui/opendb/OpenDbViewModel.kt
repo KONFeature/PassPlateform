@@ -1,59 +1,65 @@
 package com.nivelais.passplateform.ui.opendb
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.nivelais.passplateform.data.local.entities.PassDatabase
-import com.nivelais.passplateform.data.repositories.PassDatabaseRepository
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
+import androidx.lifecycle.*
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.nivelais.passplateform.App
+import com.nivelais.passplateform.utils.Provider
+import com.nivelais.passplateform.workers.FileWorker
+import java.util.*
+import kotlin.collections.ArrayList
 
-class OpenDbViewModel: ViewModel() {
+class OpenDbViewModel : ViewModel() {
 
-    // The current activity state
-    private val state = MutableLiveData<State>(State.START)
-
-    // Last openned password databases
-    private val databases = MutableLiveData<List<PassDatabase>>()
+    // Choosen provider
+    private var choosenProvider: Provider? = null
 
     /**
-     * Return the current state of the activity
+     * Function used to get the providers from the view
      */
-    fun getState(): LiveData<State> = state
+    fun getProviders(): ArrayList<Provider> =
+        ArrayList(Provider.values().toList())
 
     /**
-     * Fetch the latest open pass database
+     * Get the intent to launch in function of the provider
      */
-    fun getDatabases() : LiveData<List<PassDatabase>> {
-        // Init if it wasn't done yet
-        databases.value?:let{
-            databases.postValue(PassDatabaseRepository.getRecentlyOpenned())
+    fun getIntentFromProvider(provider: Provider): Intent? {
+        choosenProvider = provider
+        return when (provider) {
+            Provider.FILE_SYSTEM -> {
+                // Create an intent that open file system selector
+                Log.d(App.TAG, "File system database provider")
+                Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = "*/*"
+                }
+            }
+            else -> {
+                Log.w(App.TAG, "Unknown provider choosen")
+                return null
+            }
         }
-
-        return databases
     }
 
     /**
-     * Called when a user click on open database btn
+     * Generate a file worker when the file has been choosen
      */
-    fun clickOpenDb() {
-        state.value?.let { currentState ->
-            if(currentState == State.START) state.postValue(State.PROVIDER)
-        }
-    }
-
-    /**
-     * Called when a user press back
-     */
-    fun clickBack() {
-        if(state.value != State.START)
-            state.postValue(State.START)
-        else
-            state.postValue(State.EXIT)
-    }
-
-    enum class State {
-        START,
-        PROVIDER,
-        EXPLORER,
-        EXIT
+    fun launchFileWorker(uri: Uri, provider: Provider): UUID {
+        val fileWorker = OneTimeWorkRequestBuilder<FileWorker>()
+            .setInputData(
+                Data.Builder().putAll(
+                    mapOf(
+                        FileWorker.PARAM_INPUT_PROVIDER to provider.hashCode(),
+                        FileWorker.PARAM_INPUT_URI to uri.toString()
+                    )
+                ).build()
+            ).build()
+        WorkManager.getInstance().enqueue(fileWorker)
+        return fileWorker.id
     }
 }
