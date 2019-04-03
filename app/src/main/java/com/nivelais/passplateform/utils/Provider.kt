@@ -1,6 +1,7 @@
 package com.nivelais.passplateform.utils
 
 import com.nivelais.passplateform.R
+import io.objectbox.converter.PropertyConverter
 
 enum class Provider(val titleId: Int,
                     val iconId: Int,
@@ -10,8 +11,9 @@ enum class Provider(val titleId: Int,
 
     companion object {
         // Retreive a provider from his hashcode
-        fun fromHashcode(hash: Int): Provider? =
-            values().first { provider -> provider.hashCode() == hash }
+        fun fromHashcode(hash: Int?): Provider =
+            values().firstOrNull { provider -> provider.hashCode() == hash }?:let { FILE_SYSTEM }
+
 
         // Return a list of all the intent request code
         fun requestCodes() : List<Int> =

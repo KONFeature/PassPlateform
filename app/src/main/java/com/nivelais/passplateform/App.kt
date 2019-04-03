@@ -35,14 +35,5 @@ class App : Application() {
         // TODO : To remove
         // Sample add item
         val box: Box<PassDatabase> = store.boxFor()
-        if(box.all.isEmpty())
-            box.put(
-                PassDatabase("db1", "/db1.kdbx", "gdrive", Date()),
-                PassDatabase("db2", "/db2.kdbx", "gdrive", Date()),
-                PassDatabase("db3", "/db3.kdbx", "local", Date()),
-                PassDatabase("db4", "/db4.kdbx", "dropbox", Date()),
-                PassDatabase("db5", "/db5.kdbx", "gdrive", Date()),
-                PassDatabase("db6", "/db6.kdbx", "local", Date())
-            )
     }
 }

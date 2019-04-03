@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toFile
 import androidx.recyclerview.widget.RecyclerView
 import com.nivelais.passplateform.data.local.entities.PassDatabase
 import com.nivelais.passplateform.R
@@ -30,8 +31,8 @@ class RecentlyOpennedAdapter(
     // Bind the view holder
     override fun onBindViewHolder(holder: RecentlyOpennedViewHolder, position: Int) {
         holder.dbName?.text = databases[position].name
-        holder.dbProvider?.text = databases[position].provider
-        holder.dbPath?.text = databases[position].path
+        holder.dbProvider?.text = context.getString(databases[position].provider.titleId)
+        holder.dbPath?.text = databases[position].distPath.path
     }
 
     // View Holder for this adapter

@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:3917893818535416988",
-      "lastPropertyId": "5:3566962797560575915",
+      "lastPropertyId": "7:355125071779448383",
       "name": "PassDatabase",
       "properties": [
         {
@@ -17,16 +17,20 @@
           "name": "name"
         },
         {
-          "id": "3:5121195600763191230",
-          "name": "path"
-        },
-        {
           "id": "4:1397387294273726854",
           "name": "lastOpen"
         },
         {
           "id": "5:3566962797560575915",
           "name": "provider"
+        },
+        {
+          "id": "6:671988099610994796",
+          "name": "localPath"
+        },
+        {
+          "id": "7:355125071779448383",
+          "name": "distPath"
         }
       ],
       "relations": []
@@ -40,7 +44,9 @@
   "modelVersionParserMinimum": 4,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    5121195600763191230
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

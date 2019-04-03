@@ -6,6 +6,7 @@ import com.nivelais.passplateform.data.local.entities.PassDatabase_
 import io.objectbox.Box
 import io.objectbox.android.ObjectBoxLiveData
 import io.objectbox.kotlin.boxFor
+import io.objectbox.query.QueryBuilder
 
 object PassDatabaseDao {
 
@@ -16,6 +17,6 @@ object PassDatabaseDao {
     fun save(passDb: PassDatabase) = store.put(passDb)
 
     // Get last openned passwordDatabase
-    fun lastOpenned(limit: Long) = store.query().order(PassDatabase_.lastOpen).build().find(0, limit)
+    fun lastOpenned(limit: Long) = store.query().order(PassDatabase_.lastOpen, QueryBuilder.DESCENDING).build().find(0, limit)
 
 }

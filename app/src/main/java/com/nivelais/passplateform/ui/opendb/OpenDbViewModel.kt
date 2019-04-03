@@ -11,6 +11,7 @@ import androidx.work.WorkManager
 import com.nivelais.passplateform.App
 import com.nivelais.passplateform.utils.Provider
 import com.nivelais.passplateform.workers.FileWorker
+import com.nivelais.passplateform.workers.FileWorker.Companion.REQUIRED_MIME_TYPE
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -36,7 +37,8 @@ class OpenDbViewModel : ViewModel() {
                 Log.d(App.TAG, "File system database provider")
                 Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                     addCategory(Intent.CATEGORY_OPENABLE)
-                    type = "*/*"
+                    type = REQUIRED_MIME_TYPE[0]
+                    putExtra(Intent.EXTRA_MIME_TYPES, FileWorker.REQUIRED_MIME_TYPE.toTypedArray())
                 }
             }
             else -> {

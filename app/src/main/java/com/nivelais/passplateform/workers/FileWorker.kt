@@ -1,13 +1,16 @@
 package com.nivelais.passplateform.workers
 
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
-import android.provider.DocumentsContract
+import android.provider.OpenableColumns
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.nivelais.passplateform.App
+import com.nivelais.passplateform.data.local.entities.PassDatabase
 import com.nivelais.passplateform.utils.Provider
+import java.io.*
 import java.util.*
 
 /**
@@ -30,8 +33,16 @@ class FileWorker(
     companion object {
         const val TAG = "FileWroker"
 
+        // Param key for this worker
         const val PARAM_INPUT_URI = "inputUri"
         const val PARAM_INPUT_PROVIDER = "inputProvider"
+
+        // Column to read on file metadata
+        const val COLUMN_NAME = OpenableColumns.DISPLAY_NAME
+        const val COLUMN_MIME = "mime_type"
+
+        // The required mime type
+        val REQUIRED_MIME_TYPE = listOf("application/octet-stream", "application/x-keepass2", "application/x-keepass", "application/keepass")
     }
 
     override fun doWork(): Result {
@@ -40,20 +51,18 @@ class FileWorker(
         // Get file params
         val uri = Uri.parse(param.inputData.keyValueMap[PARAM_INPUT_URI] as String)
         val provider = Provider.fromHashcode(param.inputData.keyValueMap[PARAM_INPUT_PROVIDER] as Int)
+        assertFileType(uri)?.let { return it }
 
-        // Clone the file in different way, depending of the provider
-        when(provider) {
-            Provider.FILE_SYSTEM -> {
+        // Retreive the fileName
+        val fileName = retreiveBaseFileName(uri)?:let { return Result.failure() }
 
-            }
-            else -> {
-                Log.w(App.TAG, "Provider not implemented yet")
-                return Result.failure()
-            }
-        }
+        // Copy the file to local storage
+        val uriLocal = copyToLocal(uri, fileName)?:let { return Result.failure() }
 
-        Log.e(App.TAG, "Authority ? ${uri}, provider $provider")
+        // Save the file to pass database
+        App.store.boxFor(PassDatabase::class.java).put(PassDatabase( fileName, uriLocal, uri, provider, Date()))
 
+        // Return the result
         return Result.success()
     }
 
@@ -82,6 +91,65 @@ class FileWorker(
         }
 
         return null
+    }
+
+    /**
+     * Read the file metadata of the given uri
+     */
+    private fun assertFileType(uri: Uri): Result? {
+        val cursor: Cursor? = ctx.contentResolver.query( uri, null, null, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                // Get the mime type
+                val mimeType: String = it.getString(it.getColumnIndex(COLUMN_MIME))
+                Log.d(App.TAG, "File mimetype $mimeType")
+                if(!REQUIRED_MIME_TYPE.contains(mimeType))
+                    return Result.failure()
+            }
+        }?: let {
+            Log.e(App.TAG, "Unable to read file metadata")
+            return Result.failure()
+        }
+
+        return null
+    }
+
+    /**
+     * Read the file metadata of the given uri
+     */
+    private fun retreiveBaseFileName(uri: Uri): String? {
+        val cursor: Cursor? = ctx.contentResolver.query( uri, null, null, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+//                return null
+                return it.getString(it.getColumnIndex(COLUMN_NAME))
+            }
+        }
+        return null
+    }
+
+    /**
+     * Function used to copy the selected file to the application storage
+     */
+    private fun copyToLocal(uri: Uri, fileName: String): Uri? {
+        var res: Uri? = null
+        try {
+            val fileDestination = File(ctx.filesDir, fileName)
+            ctx.contentResolver.openInputStream(uri)?.use { inputStream ->
+                ctx.contentResolver.openOutputStream(Uri.fromFile(fileDestination))?.use {outputStream ->
+                    // Copy the file content to destination
+                    val copiedByte = inputStream.copyTo(outputStream)
+                    Log.i(App.TAG, "Writed $copiedByte byte to file destination")
+
+                    if(copiedByte > 0)
+                        return Uri.fromFile(fileDestination)
+                }
+            }
+        } catch(e: IOException) {
+            Log.e(App.TAG, "Error occured during file copying ${e.message}")
+        }
+
+        return res
     }
 
 }
