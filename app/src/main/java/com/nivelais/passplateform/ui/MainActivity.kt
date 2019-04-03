@@ -16,7 +16,9 @@ import com.nivelais.passplateform.ui.start.StartFragment
 import com.nivelais.passplateform.R
 
 
-class MainActivity : AppCompatActivity(), StartFragment.OnStartFragmentAction {
+class MainActivity : AppCompatActivity(),
+    StartFragment.OnStartFragmentAction,
+    OpenDbFragment.OnOpenDbFragmentAction {
 
     // Define and load the view vm
     private val vm by lazy {
@@ -53,13 +55,6 @@ class MainActivity : AppCompatActivity(), StartFragment.OnStartFragmentAction {
     }
 
     /**
-     * Callback of the start fragment, when the user click on the open db button
-     */
-    override fun onClickOpenDb() {
-        openFragment(OpenDbFragment.newInstance())
-    }
-
-    /**
      * Function used to open a fragment with an animation
      */
     private fun openFragment(fragment: Fragment) {
@@ -76,11 +71,26 @@ class MainActivity : AppCompatActivity(), StartFragment.OnStartFragmentAction {
         fragment.sharedElementEnterTransition = TransitionInflater.from(this)
             .inflateTransition(android.R.transition.move)
             .setDuration(transitionDelay)
-        oldFragment?.view?.findViewById<TextView>(R.id.text_view_app_title)?.let { transaction.addSharedElement(it, it.transitionName) }
+        oldFragment?.view?.findViewById<TextView>(R.id.text_view_app_title)
+            ?.let { transaction.addSharedElement(it, it.transitionName) }
 
         // Launch transaction
         transaction
             .replace(R.id.layout_main_fragment, fragment)
             .commit()
+    }
+
+    /**
+     * Callback of the start fragment, when the user click on the open db button
+     */
+    override fun onClickOpenDb() {
+        openFragment(OpenDbFragment.newInstance())
+    }
+
+    /**
+     * Callback of the open db fragment, when the user have selected a good database
+     */
+    override fun onDbOpenned() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

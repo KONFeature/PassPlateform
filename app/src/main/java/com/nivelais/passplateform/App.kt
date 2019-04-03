@@ -31,9 +31,5 @@ class App : Application() {
         store = MyObjectBox.builder()
             .androidContext(applicationContext)
             .build()
-
-        // TODO : To remove
-        // Sample add item
-        val box: Box<PassDatabase> = store.boxFor()
     }
 }

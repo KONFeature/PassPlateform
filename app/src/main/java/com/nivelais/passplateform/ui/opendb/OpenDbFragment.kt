@@ -1,12 +1,14 @@
 package com.nivelais.passplateform.ui.opendb
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -32,8 +34,12 @@ class OpenDbFragment : Fragment() {
         ViewModelProviders.of(this)[OpenDbViewModel::class.java]
     }
 
-    // Recycler view for the provider
+    // Listener for ur fragment callback
+    private lateinit var listener: OnOpenDbFragmentAction
+
+    // UI components
     private lateinit var providerRecyclerView: RecyclerView
+    private lateinit var loadingFileWorker: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +49,7 @@ class OpenDbFragment : Fragment() {
 
         // Load ui component
         providerRecyclerView = view.findViewById(R.id.recycler_view_providers)
+        loadingFileWorker = view.findViewById(R.id.loading_file_worker)
 
         // Init recycler view
         activity?.let { ctx ->
@@ -55,15 +62,17 @@ class OpenDbFragment : Fragment() {
                 }
             }
         }
-
-
         return view
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
 
-        // Put callback here
+        // Attach listener to fragment
+        if (context is OnOpenDbFragmentAction)
+            listener = context
+        else
+            throw ClassCastException("Caller context of open db fragment must implement OnOpenDbFragmentAction")
     }
 
     /**
@@ -71,6 +80,11 @@ class OpenDbFragment : Fragment() {
      */
     private fun workerStateObserver() =
         Observer<WorkInfo> { workInfo ->
+            // Hide progress bar when finished
+            if (workInfo.state.isFinished)
+                loadingFileWorker.visibility = View.INVISIBLE
+
+            // Check the state of the file worker
             when (workInfo.state) {
                 WorkInfo.State.SUCCEEDED -> {
                     Log.d(App.TAG, "File worker ended with success")
@@ -92,13 +106,21 @@ class OpenDbFragment : Fragment() {
         if (!Provider.requestCodes().contains(requestCode))
             return super.onActivityResult(requestCode, resultCode, resultData)
 
-        if (resultCode != Activity.RESULT_OK || resultData?.data == null)
-        // Check if we have a good result
+        if (resultCode != Activity.RESULT_OK || resultData?.data == null) {
+            // Check if we have a good result
             context?.alert(R.string.lbl_dialog_pick_file_error) { okButton {} }?.show()
-        else
-        // Launch and observe the worker
+        } else {
+            // Launch and observe the worker
             WorkManager.getInstance()
                 .getWorkInfoByIdLiveData(vm.launchFileWorker(resultData.data!!, Provider.FILE_SYSTEM))
                 .observe(viewLifecycleOwner, workerStateObserver())
+
+            // Show the progress bar
+            loadingFileWorker.visibility = View.VISIBLE
+        }
+    }
+
+    interface OnOpenDbFragmentAction {
+        fun onDbOpenned()
     }
 }

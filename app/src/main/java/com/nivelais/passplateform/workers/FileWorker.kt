@@ -5,11 +5,13 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
+import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.nivelais.passplateform.App
 import com.nivelais.passplateform.data.local.entities.PassDatabase
 import com.nivelais.passplateform.utils.Provider
+import io.objectbox.Box
 import java.io.*
 import java.util.*
 
@@ -37,6 +39,9 @@ class FileWorker(
         const val PARAM_INPUT_URI = "inputUri"
         const val PARAM_INPUT_PROVIDER = "inputProvider"
 
+        // Result for the success
+        const val RESULT_DB_ID = "databaseId"
+
         // Column to read on file metadata
         const val COLUMN_NAME = OpenableColumns.DISPLAY_NAME
         const val COLUMN_MIME = "mime_type"
@@ -60,10 +65,14 @@ class FileWorker(
         val uriLocal = copyToLocal(uri, fileName)?:let { return Result.failure() }
 
         // Save the file to pass database
-        App.store.boxFor(PassDatabase::class.java).put(PassDatabase( fileName, uriLocal, uri, provider, Date()))
+        val passDb = PassDatabase(fileName, uriLocal, uri, provider, Date())
+        App.store.boxFor(PassDatabase::class.java).put(passDb)
+        Log.i(App.TAG, "Inserted password database : $passDb")
 
         // Return the result
-        return Result.success()
+        return Result.success(Data.Builder()
+            .putAll(mapOf(RESULT_DB_ID to passDb.id))
+            .build())
     }
 
     /**
@@ -134,6 +143,7 @@ class FileWorker(
     private fun copyToLocal(uri: Uri, fileName: String): Uri? {
         var res: Uri? = null
         try {
+            // Check uri pas dans la db et on overwrite pas une autre db en local
             val fileDestination = File(ctx.filesDir, fileName)
             ctx.contentResolver.openInputStream(uri)?.use { inputStream ->
                 ctx.contentResolver.openOutputStream(Uri.fromFile(fileDestination))?.use {outputStream ->
