@@ -8,11 +8,13 @@ import androidx.core.net.toFile
 import androidx.recyclerview.widget.RecyclerView
 import com.nivelais.passplateform.data.local.entities.PassDatabase
 import com.nivelais.passplateform.R
+import com.nivelais.passplateform.utils.Provider
 import kotlinx.android.synthetic.main.item_recently_openned_db.view.*
 
 class RecentlyOpennedAdapter(
     val databases: ArrayList<PassDatabase>,
-    private val context: Context
+    private val context: Context,
+    private val callback: (Long) -> Unit
 ) : RecyclerView.Adapter<RecentlyOpennedAdapter.RecentlyOpennedViewHolder>() {
 
     // Create view holder
@@ -33,6 +35,7 @@ class RecentlyOpennedAdapter(
         holder.dbName?.text = databases[position].name
         holder.dbProvider?.text = context.getString(databases[position].provider.titleId)
         holder.dbPath?.text = databases[position].distPath.path
+        holder.onClickListener { callback.invoke(databases[position].id) }
     }
 
     // View Holder for this adapter
@@ -40,5 +43,11 @@ class RecentlyOpennedAdapter(
         val dbName = view.text_view_db_name
         val dbProvider = view.text_view_db_provider
         val dbPath = view.text_view_db_path
+
+        fun onClickListener(call: () -> Unit) {
+            view.setOnClickListener {
+                call.invoke()
+            }
+        }
     }
 }

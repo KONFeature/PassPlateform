@@ -10,6 +10,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.nivelais.passplateform.App
 import com.nivelais.passplateform.data.local.entities.PassDatabase
+import com.nivelais.passplateform.data.repositories.PassDatabaseRepository
 import com.nivelais.passplateform.utils.Provider
 import io.objectbox.Box
 import java.io.*
@@ -66,7 +67,7 @@ class FileWorker(
 
         // Save the file to pass database
         val passDb = PassDatabase(fileName, uriLocal, uri, provider, Date())
-        App.store.boxFor(PassDatabase::class.java).put(passDb)
+        PassDatabaseRepository.save(passDb)
         Log.i(App.TAG, "Inserted password database : $passDb")
 
         // Return the result

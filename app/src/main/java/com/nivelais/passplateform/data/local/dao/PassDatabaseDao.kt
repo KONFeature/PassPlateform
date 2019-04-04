@@ -16,6 +16,9 @@ object PassDatabaseDao {
     // Save a passwordDatabse
     fun save(passDb: PassDatabase) = store.put(passDb)
 
+    // Find a passwordDatabse with id
+    fun findById(id: Long) = store.get(id)
+
     // Get last openned passwordDatabase
     fun lastOpenned(limit: Long) = store.query().order(PassDatabase_.lastOpen, QueryBuilder.DESCENDING).build().find(0, limit)
 

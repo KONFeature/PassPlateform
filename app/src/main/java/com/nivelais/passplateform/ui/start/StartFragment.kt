@@ -60,7 +60,9 @@ class StartFragment : Fragment() {
         activity?.let { ctx ->
             recentDatabasesView.itemAnimator = SlideInLeftAnimator()
             recentDatabasesView.layoutManager = LinearLayoutManager(ctx)
-            recentDatabasesView.adapter = RecentlyOpennedAdapter(vm.getDatabases(), ctx)
+            recentDatabasesView.adapter = RecentlyOpennedAdapter(vm.getDatabases(), ctx) {
+                listener.onDbClicked(it)
+            }
         }
 
         return view
@@ -79,5 +81,7 @@ class StartFragment : Fragment() {
 
     interface OnStartFragmentAction {
         fun onClickOpenDb()
+
+        fun onDbClicked(id: Long)
     }
 }

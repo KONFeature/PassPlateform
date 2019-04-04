@@ -13,6 +13,9 @@
     <string name="lbl_choose_provider">Choose the keepass database provider</string>
     <string name="lbl_dialog_pick_file_error">You didn\'t pick a file, or pick an invalid keepass file.</string>
 
+    <!-- Explorer fragment -->
+
+
     <!-- Providers-->
     <string name="provider_filesystem">File System</string>
     <string name="provider_gdrive">Google Drive</string>

@@ -20,6 +20,7 @@ import com.nivelais.passplateform.App
 import com.nivelais.passplateform.R
 import com.nivelais.passplateform.utils.Provider
 import com.nivelais.passplateform.utils.adapters.ProviderAdapter
+import com.nivelais.passplateform.workers.FileWorker
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator
 import org.jetbrains.anko.*
 
@@ -88,6 +89,7 @@ class OpenDbFragment : Fragment() {
             when (workInfo.state) {
                 WorkInfo.State.SUCCEEDED -> {
                     Log.d(App.TAG, "File worker ended with success")
+                    listener.onDbOpenned(workInfo.outputData.getLong(FileWorker.RESULT_DB_ID, 0))
                 }
                 WorkInfo.State.FAILED -> {
                     context?.alert(R.string.lbl_dialog_pick_file_error) { okButton {} }?.show()
@@ -121,6 +123,6 @@ class OpenDbFragment : Fragment() {
     }
 
     interface OnOpenDbFragmentAction {
-        fun onDbOpenned()
+        fun onDbOpenned(id: Long)
     }
 }

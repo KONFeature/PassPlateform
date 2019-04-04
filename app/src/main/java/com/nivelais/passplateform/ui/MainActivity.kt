@@ -14,6 +14,7 @@ import com.nivelais.passplateform.BuildConfig
 import com.nivelais.passplateform.ui.opendb.OpenDbFragment
 import com.nivelais.passplateform.ui.start.StartFragment
 import com.nivelais.passplateform.R
+import com.nivelais.passplateform.ui.explorer.ExplorerFragment
 
 
 class MainActivity : AppCompatActivity(),
@@ -88,9 +89,16 @@ class MainActivity : AppCompatActivity(),
     }
 
     /**
+     * Callback of the start fragment, when the user click on a recently open db button
+     */
+    override fun onDbClicked(id: Long) {
+        openFragment(ExplorerFragment.newInstance(id))
+    }
+
+    /**
      * Callback of the open db fragment, when the user have selected a good database
      */
-    override fun onDbOpenned() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onDbOpenned(id: Long) {
+        openFragment(ExplorerFragment.newInstance(id))
     }
 }
