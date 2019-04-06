@@ -9,6 +9,7 @@ import com.nivelais.passplateform.data.local.entities.PassDatabase
 import com.nivelais.passplateform.data.repositories.PassDatabaseRepository
 import de.slackspace.openkeepass.KeePassDatabase
 import de.slackspace.openkeepass.domain.Entry
+import de.slackspace.openkeepass.domain.KeePassFile
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
@@ -16,6 +17,7 @@ import java.io.File
 class ExplorerViewModel: ViewModel() {
 
     private var currentDatabase: PassDatabase? = null
+    private var keePassDatabase: KeePassFile? = null
 
     val stateLiveData = MutableLiveData<ExplorerState>(ExplorerState.loading())
 
@@ -24,10 +26,12 @@ class ExplorerViewModel: ViewModel() {
      */
     fun loadDatabase(dbId: Long) {
         Log.d(App.TAG, "Loading the database with id $dbId")
-        PassDatabaseRepository.findById(dbId)?.let { db ->
-            Log.d(App.TAG, "Database loaded")
-            currentDatabase = db
-            stateLiveData.postValue(ExplorerState.password(db.name))
+        currentDatabase?:let {
+            PassDatabaseRepository.findById(dbId)?.let { db ->
+                Log.d(App.TAG, "Database loaded")
+                currentDatabase = db
+                stateLiveData.postValue(ExplorerState.password(db.name))
+            }
         }
     }
 
@@ -41,8 +45,8 @@ class ExplorerViewModel: ViewModel() {
                 // Try to open the database
                 val dbFile = database.localPath.toFile()
                 try {
-                    val db = KeePassDatabase.getInstance(dbFile).openDatabase(pass)
-                    stateLiveData.postValue(ExplorerState.entries(database.name, db.entries))
+                    keePassDatabase = KeePassDatabase.getInstance(dbFile).openDatabase(pass)
+                    stateLiveData.postValue(ExplorerState.entries(database.name, keePassDatabase!!.entries))
                 } catch (e: Exception) {
                     Log.w(App.TAG, "Exception when reading the database ${e.message}")
                     stateLiveData.postValue(ExplorerState.passwordError(e.message, database.name))

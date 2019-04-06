@@ -17,6 +17,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.nivelais.passplateform.App
 import com.nivelais.passplateform.R
 import com.nivelais.passplateform.data.local.entities.PassDatabase
+import com.nivelais.passplateform.utils.adapters.EntryAdapter
 import de.slackspace.openkeepass.domain.Entry
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator
 
@@ -65,7 +66,7 @@ class ExplorerFragment : Fragment() {
         activity?.let { ctx ->
             entriesRecyclerView.itemAnimator = SlideInLeftAnimator()
             entriesRecyclerView.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-//            entriesRecyclerView.adapter = EntriesAdapter(vm.getEntries(), ctx)
+            entriesRecyclerView.adapter = EntryAdapter(ArrayList(), ctx)
         }
 
         // handle clck on the password button
@@ -121,8 +122,8 @@ class ExplorerFragment : Fragment() {
                 }
                 ExplorerViewModel.ExplorerState.Step.ENTRIES -> {
                     textViewEntriesDbName.text = state.dbName
-                    state.entries?.forEach {
-                        Log.d(App.TAG, "Entry : ${it.title}")
+                    state.entries?.let { entries ->
+                        (entriesRecyclerView.adapter as EntryAdapter).add(entries)
                     }
                     switchSene(entriesScene)
                 }
