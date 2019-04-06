@@ -4,7 +4,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:backgroundTint="@color/colorPrimaryDark"
     style="@style/Widget.MaterialComponents.Button">
 
     <TextView
@@ -14,7 +13,6 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:layout_marginTop="@dimen/default_small"
         android:layout_marginStart="@dimen/default_small"
-        android:textColor="@color/colorOnPrimaryDark"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/text_view_db_provider"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,7 +25,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:layout_marginBottom="@dimen/default_small"
-        android:textColor="@color/colorOnPrimaryDark"
         app:layout_constraintStart_toStartOf="@id/text_view_db_name"
         app:layout_constraintTop_toBottomOf="@id/text_view_db_name"
         app:layout_constraintBottom_toBottomOf="parent" />
@@ -41,7 +38,6 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@color/colorOnPrimaryDark"
         app:layout_constraintBottom_toBottomOf="@id/text_view_db_provider"
         app:layout_constraintEnd_toStartOf="@id/image_view_db_state"
         app:layout_constraintHorizontal_bias="0.0"
@@ -55,7 +51,6 @@
         android:layout_marginEnd="@dimen/default_small"
         android:src="@drawable/ic_lock"
         android:contentDescription="@string/img_lock"
-        android:tint="@color/colorOnPrimaryDark"
         app:layout_constraintTop_toTopOf="@id/text_view_db_name"
         app:layout_constraintBottom_toBottomOf="@id/text_view_db_provider"
         app:layout_constraintEnd_toEndOf="parent" />

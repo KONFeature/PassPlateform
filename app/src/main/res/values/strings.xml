@@ -14,7 +14,8 @@
     <string name="lbl_dialog_pick_file_error">You didn\'t pick a file, or pick an invalid keepass file.</string>
 
     <!-- Explorer fragment -->
-
+    <string name="hint_password">Database password</string>
+    <string name="btn_password">Go</string>
 
     <!-- Providers-->
     <string name="provider_filesystem">File System</string>

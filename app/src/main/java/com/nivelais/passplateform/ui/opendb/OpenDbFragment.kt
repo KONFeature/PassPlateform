@@ -20,6 +20,7 @@ import com.nivelais.passplateform.App
 import com.nivelais.passplateform.R
 import com.nivelais.passplateform.utils.Provider
 import com.nivelais.passplateform.utils.adapters.ProviderAdapter
+import com.nivelais.passplateform.utils.adapters.ProviderItemDecoration
 import com.nivelais.passplateform.workers.FileWorker
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator
 import org.jetbrains.anko.*
@@ -56,6 +57,7 @@ class OpenDbFragment : Fragment() {
         activity?.let { ctx ->
             providerRecyclerView.itemAnimator = SlideInLeftAnimator()
             providerRecyclerView.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
+            providerRecyclerView.addItemDecoration(ProviderItemDecoration(16))
             providerRecyclerView.adapter = ProviderAdapter(vm.getProviders(), ctx) { provider ->
                 // Start the intent corresponding to the provider clicked
                 vm.getIntentFromProvider(provider)?.let { intent ->

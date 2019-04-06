@@ -14,9 +14,8 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nivelais.passplateform.App
-
 import com.nivelais.passplateform.R
+
 import com.nivelais.passplateform.data.local.entities.PassDatabase
 import com.nivelais.passplateform.ui.opendb.OpenDbViewModel
 import com.nivelais.passplateform.utils.adapters.RecentlyOpennedAdapter
@@ -58,12 +57,17 @@ class StartFragment : Fragment() {
 
         // Init recycler view
         activity?.let { ctx ->
-            recentDatabasesView.itemAnimator = SlideInLeftAnimator()
             recentDatabasesView.layoutManager = LinearLayoutManager(ctx)
             recentDatabasesView.adapter = RecentlyOpennedAdapter(vm.getDatabases(), ctx) {
                 listener.onDbClicked(it)
             }
         }
+
+        // Init textview
+        if(vm.getDatabases().isEmpty())
+            recentTextView.text = getText(R.string.lbl_recently_open_none)
+        else
+            recentTextView.text = getText(R.string.lbl_recently_open)
 
         return view
     }
