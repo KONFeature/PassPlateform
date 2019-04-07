@@ -1,6 +1,7 @@
 package com.nivelais.passplateform.utils
 
 import android.net.Uri
+import com.nivelais.passplateform.data.Provider
 import io.objectbox.converter.PropertyConverter
 
 // Convert for uri properties

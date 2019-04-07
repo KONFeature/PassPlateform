@@ -19,8 +19,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:layout_marginTop="@dimen/default_small"
-        android:layout_marginBottom="@dimen/default_medium" />
+        android:layout_marginBottom="@dimen/default_small" />
+
+    <TextView
+        android:id="@+id/text_view_explorer_keepath_path"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:layout_marginBottom="@dimen/default_small" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_entries"

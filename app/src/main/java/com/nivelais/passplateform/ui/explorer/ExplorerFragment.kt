@@ -1,7 +1,6 @@
 package com.nivelais.passplateform.ui.explorer
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,14 +13,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.transition.*
 import com.google.android.material.textfield.TextInputLayout
-import com.nivelais.passplateform.App
 import com.nivelais.passplateform.R
-import com.nivelais.passplateform.data.local.entities.PassDatabase
-import com.nivelais.passplateform.utils.adapters.EntryAdapter
-import de.slackspace.openkeepass.domain.Entry
+import com.nivelais.passplateform.ui.BackHandleFragment
+import com.nivelais.passplateform.ui.start.StartFragment
+import com.nivelais.passplateform.utils.adapters.KeepassFileAdapter
+import de.slackspace.openkeepass.domain.KeePassFileElement
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator
 
-class ExplorerFragment : Fragment() {
+class ExplorerFragment : Fragment(), BackHandleFragment {
 
     companion object {
         private val ARGS_DB_ID = "databaseId"
@@ -44,12 +43,13 @@ class ExplorerFragment : Fragment() {
     private var currentScene: Scene? = null
     private lateinit var loadingScene: Scene
     private lateinit var passwordScene: Scene
-    private lateinit var entriesScene: Scene
+    private lateinit var filesScene: Scene
 
     // Ui components
     private lateinit var entriesRecyclerView: RecyclerView
     private lateinit var textViewPassDbName: TextView
-    private lateinit var textViewEntriesDbName: TextView
+    private lateinit var textViewFilesDbName: TextView
+    private lateinit var textViewFilesPath: TextView
     private lateinit var inputPasswordDatabase: TextInputLayout
     private lateinit var buttonPassword: Button
 
@@ -66,16 +66,19 @@ class ExplorerFragment : Fragment() {
         activity?.let { ctx ->
             entriesRecyclerView.itemAnimator = SlideInLeftAnimator()
             entriesRecyclerView.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-            entriesRecyclerView.adapter = EntryAdapter(ArrayList(), ctx)
+            entriesRecyclerView.adapter = KeepassFileAdapter(ArrayList(), ctx) { folderUuid ->
+                vm.folderSelected(folderUuid)
+            }
         }
 
-        // handle clck on the password button
+        // handle click on the password button
         buttonPassword.setOnClickListener {
             vm.enterPassword(inputPasswordDatabase.editText?.text.toString())
         }
 
         // Init observer
         vm.stateLiveData.observe(viewLifecycleOwner, stateObserver())
+        vm.filesLiveData.observe(viewLifecycleOwner, filesObserver())
 
         // Ask the view model to load the database
         arguments?.getLong(ARGS_DB_ID)?.let { vm.loadDatabase(it) }
@@ -90,19 +93,20 @@ class ExplorerFragment : Fragment() {
         // Create views
         val loadingSceneView = layoutInflater.inflate(R.layout.scene_explorer_loading, container, false)
         val passwordSceneView = layoutInflater.inflate(R.layout.scene_explorer_enter_password, container, false)
-        val entriesSceneView = layoutInflater.inflate(R.layout.scene_explorer_entries, container, false)
+        val entriesSceneView = layoutInflater.inflate(R.layout.scene_explorer_keepass_files, container, false)
 
         // Fetch ui components
         textViewPassDbName = passwordSceneView.findViewById(R.id.text_view_explorer_db_name)
         inputPasswordDatabase = passwordSceneView.findViewById(R.id.input_database_password)
         buttonPassword = passwordSceneView.findViewById(R.id.btn_enter_password)
-        textViewEntriesDbName = entriesSceneView.findViewById(R.id.text_view_explorer_db_name)
+        textViewFilesDbName = entriesSceneView.findViewById(R.id.text_view_explorer_db_name)
+        textViewFilesPath = entriesSceneView.findViewById(R.id.text_view_explorer_keepath_path)
         entriesRecyclerView = entriesSceneView.findViewById(R.id.recycler_view_entries)
 
         // Create scenes
         loadingScene = Scene(container, loadingSceneView)
         passwordScene = Scene(container, passwordSceneView)
-        entriesScene = Scene(container, entriesSceneView)
+        filesScene = Scene(container, entriesSceneView)
 
         // Enter loading scene
         loadingScene.enter()
@@ -121,13 +125,18 @@ class ExplorerFragment : Fragment() {
                     switchSene(passwordScene)
                 }
                 ExplorerViewModel.ExplorerState.Step.ENTRIES -> {
-                    textViewEntriesDbName.text = state.dbName
-                    state.entries?.let { entries ->
-                        (entriesRecyclerView.adapter as EntryAdapter).add(entries)
-                    }
-                    switchSene(entriesScene)
+                    textViewFilesDbName.text = state.dbName
+                    switchSene(filesScene)
                 }
             }
+        }
+
+    // Ur files observer
+    private fun filesObserver() =
+        Observer<List<KeePassFileElement>> { files ->
+            (entriesRecyclerView.adapter as KeepassFileAdapter).clear()
+            (entriesRecyclerView.adapter as KeepassFileAdapter).add(files)
+            textViewFilesPath.text = vm.getPath()
         }
 
     // Fucntion used to switch between scene
@@ -138,6 +147,11 @@ class ExplorerFragment : Fragment() {
         currentScene = scene
         TransitionManager.go(scene, getTransition())
     }
+
+    override fun onBackPressed(): Boolean {
+        return vm.goBack()
+    }
+
 
     // Ur transition between the scene
     private fun getTransition(): Transition {

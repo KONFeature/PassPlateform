@@ -20,6 +20,8 @@
     <!-- Providers-->
     <string name="provider_filesystem">File System</string>
     <string name="provider_gdrive">Google Drive</string>
+    <string name="provider_http">HTTP</string>
+    <string name="provider_ssh">SSH</string>
 
     <!-- Transition name -->
     <string name="transition_title">titleTransition</string>

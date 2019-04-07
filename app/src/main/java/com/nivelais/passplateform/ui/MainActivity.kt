@@ -6,7 +6,6 @@ import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.transition.*
 import com.nivelais.passplateform.App
@@ -44,7 +43,13 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.findFragmentById(R.id.layout_main_fragment) !is StartFragment)
+        // Little trick to send the onBackPressed info to fragment
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.layout_main_fragment)
+        if(currentFragment is BackHandleFragment && currentFragment.onBackPressed())
+            return
+
+        // Else check if we need to go back to the start fragment, or call super
+        if (currentFragment !is StartFragment)
             openFragment(StartFragment.newInstance())
         else
             super.onBackPressed()

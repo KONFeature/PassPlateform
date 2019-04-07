@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
-import com.nivelais.passplateform.utils.Provider
+import com.nivelais.passplateform.data.Provider
 
 class ProviderAdapter(val providers: ArrayList<Provider>,
                       private val context: Context,
@@ -21,17 +21,14 @@ class ProviderAdapter(val providers: ArrayList<Provider>,
     override fun onBindViewHolder(holder: ProviderViewModel, position: Int) {
         holder.btn.text = context.getString(providers[position].titleId)
         holder.btn.icon = context.getDrawable(providers[position].iconId)
-        holder.onClickListener { callback.invoke(providers[position]) }
+        holder.btn.isEnabled = providers[position].available
+        holder.btn.setOnClickListener {
+            callback.invoke(providers[position])
+        }
     }
 
     inner class ProviderViewModel(private val view: MaterialButton) : RecyclerView.ViewHolder(view) {
         val btn = view
-
-        fun onClickListener(call: () -> Unit) {
-            view.setOnClickListener {
-                call.invoke()
-            }
-        }
     }
 }
 

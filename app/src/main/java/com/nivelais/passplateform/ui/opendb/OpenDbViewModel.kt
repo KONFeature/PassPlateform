@@ -1,6 +1,5 @@
 package com.nivelais.passplateform.ui.opendb
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -9,7 +8,7 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.nivelais.passplateform.App
-import com.nivelais.passplateform.utils.Provider
+import com.nivelais.passplateform.data.Provider
 import com.nivelais.passplateform.workers.FileWorker
 import com.nivelais.passplateform.workers.FileWorker.Companion.REQUIRED_MIME_TYPE
 import java.util.*

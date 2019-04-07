@@ -11,8 +11,7 @@ import androidx.work.WorkerParameters
 import com.nivelais.passplateform.App
 import com.nivelais.passplateform.data.local.entities.PassDatabase
 import com.nivelais.passplateform.data.repositories.PassDatabaseRepository
-import com.nivelais.passplateform.utils.Provider
-import io.objectbox.Box
+import com.nivelais.passplateform.data.Provider
 import java.io.*
 import java.util.*
 

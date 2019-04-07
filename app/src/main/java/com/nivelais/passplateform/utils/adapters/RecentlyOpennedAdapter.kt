@@ -4,11 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.net.toFile
 import androidx.recyclerview.widget.RecyclerView
 import com.nivelais.passplateform.data.local.entities.PassDatabase
 import com.nivelais.passplateform.R
-import com.nivelais.passplateform.utils.Provider
 import kotlinx.android.synthetic.main.item_recently_openned_db.view.*
 
 class RecentlyOpennedAdapter(

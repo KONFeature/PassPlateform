@@ -18,7 +18,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.nivelais.passplateform.App
 import com.nivelais.passplateform.R
-import com.nivelais.passplateform.utils.Provider
+import com.nivelais.passplateform.data.Provider
 import com.nivelais.passplateform.utils.adapters.ProviderAdapter
 import com.nivelais.passplateform.utils.adapters.ProviderItemDecoration
 import com.nivelais.passplateform.workers.FileWorker
