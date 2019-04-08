@@ -11,4 +11,3 @@ The arrival on the Play Store is planned for mid august 2019
  - [ObjectBox](https://objectbox.io/)
  - [Anko](https://github.com/Kotlin/anko)
  - [AndroidX](https://developer.android.com/jetpack/androidx)
-```
