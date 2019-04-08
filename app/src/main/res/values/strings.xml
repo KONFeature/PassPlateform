@@ -16,6 +16,10 @@
     <!-- Explorer fragment -->
     <string name="hint_password">Database password</string>
     <string name="btn_password">Go</string>
+    <string name="lbl_file_title">Title</string>
+    <string name="lbl_file_username">Username</string>
+    <string name="lbl_file_password">Password</string>
+    <string name="lbl_file_notes">Note</string>
 
     <!-- Providers-->
     <string name="provider_filesystem">File System</string>

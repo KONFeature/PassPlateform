@@ -16,7 +16,8 @@ import java.util.*
 class KeepassFileAdapter(
     private val files: ArrayList<KeePassFileElement>,
     private val context: Context,
-    private val folderCallback: (UUID) -> Unit
+    private val folderCallback: (UUID) -> Unit,
+    private val fileCallback: (UUID) -> Unit
 ) : RecyclerView.Adapter<KeepassFileAdapter.KeepassFileViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KeepassFileViewHolder =
@@ -33,6 +34,7 @@ class KeepassFileAdapter(
         } else if(file is Entry) {
             holder.name.text = file.title
             holder.icon.setImageResource(R.drawable.ic_file)
+            holder.onClickListener { fileCallback.invoke(file.uuid) }
         }
     }
 

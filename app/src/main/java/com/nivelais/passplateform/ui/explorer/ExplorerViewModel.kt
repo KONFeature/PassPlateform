@@ -8,6 +8,7 @@ import com.nivelais.passplateform.App
 import com.nivelais.passplateform.data.local.entities.PassDatabase
 import com.nivelais.passplateform.data.repositories.PassDatabaseRepository
 import de.slackspace.openkeepass.KeePassDatabase
+import de.slackspace.openkeepass.domain.Entry
 import de.slackspace.openkeepass.domain.Group
 import de.slackspace.openkeepass.domain.KeePassFile
 import de.slackspace.openkeepass.domain.KeePassFileElement
@@ -50,8 +51,8 @@ class ExplorerViewModel : ViewModel() {
                 val dbFile = database.localPath.toFile()
                 try {
                     keePassDatabase = KeePassDatabase.getInstance(dbFile).openDatabase(pass)
-                    folderSelected(keePassDatabase!!.root.uuid)
                     stateLiveData.postValue(ExplorerState.entries(database.name))
+                    folderSelected(keePassDatabase!!.root.uuid)
                 } catch (e: Exception) {
                     Log.w(App.TAG, "Exception when reading the database ${e.message}")
                     stateLiveData.postValue(ExplorerState.passwordError(e.message, database.name))
@@ -80,10 +81,26 @@ class ExplorerViewModel : ViewModel() {
         }
     }
 
+    /**
+     * When the user click on a file
+     */
+    fun fileSelected(fileId: UUID) {
+        keePassDatabase?.let { db ->
+            // Find the file correspondign to the entry and send it to the view
+            val file = db.getEntryByUUID(fileId)
+            stateLiveData.postValue(ExplorerState.file(currentDatabase?.name, file))
+        }
+    }
+
     // Function used to go back in ur database
     fun goBack(): Boolean {
-        if (filePath.size <= 1)
+        if(stateLiveData.value?.isFile() == true) {
+            stateLiveData.postValue(ExplorerState.entries(currentDatabase?.name))
+            return true
+        } else if(stateLiveData.value?.isLoading() == true ||
+            stateLiveData.value?.isPassword() == true || filePath.size <= 1) {
             return false
+        }
 
         filePath.removeAt(filePath.size - 1)
         folderSelected(filePath.last())
@@ -92,7 +109,7 @@ class ExplorerViewModel : ViewModel() {
 
     // Function used to get the current path of ur explorer
     fun getPath() = filePath.joinToString(separator = "/", prefix = "/", postfix = "/") { groupId ->
-        keePassDatabase?.getGroupByUUID(groupId)?.name?:"Root"
+        keePassDatabase?.getGroupByUUID(groupId)?.name?:"root"
     }
 
     /**
@@ -101,21 +118,30 @@ class ExplorerViewModel : ViewModel() {
     class ExplorerState(
         val step: Step,
         val msg: String?,
-        val dbName: String?
+        val dbName: String?,
+        val file: Entry?
     ) {
         enum class Step {
             LOADING,
             PASSWORD_ENTRY,
-            ENTRIES
+            ENTRIES,
+            FILE
         }
 
         companion object {
-            fun loading() = ExplorerState(Step.LOADING, null, null)
+            fun loading() = ExplorerState(Step.LOADING, null, null, null)
 
-            fun password(name: String?) = ExplorerState(Step.PASSWORD_ENTRY, null, name)
-            fun passwordError(msg: String?, name: String?) = ExplorerState(Step.PASSWORD_ENTRY, msg, name)
+            fun password(name: String?) = ExplorerState(Step.PASSWORD_ENTRY, null, name, null)
+            fun passwordError(msg: String?, name: String?) = ExplorerState(Step.PASSWORD_ENTRY, msg, name, null)
 
-            fun entries(name: String?) = ExplorerState(Step.ENTRIES, null, name)
+            fun entries(name: String?) = ExplorerState(Step.ENTRIES, null, name, null)
+
+            fun file(name: String?, file: Entry) = ExplorerState(Step.FILE, null, name, file)
         }
+
+        fun isLoading() = step == Step.LOADING
+        fun isPassword() = step == Step.PASSWORD_ENTRY
+        fun isFiles() = step == Step.ENTRIES
+        fun isFile() = step == Step.FILE
     }
 }

@@ -19,6 +19,9 @@ object PassDatabaseDao {
     // Find a passwordDatabse with id
     fun findById(id: Long): PassDatabase? = store.get(id)
 
+    // Find a passwordDatabse with name
+    fun findByName(name: String): PassDatabase? = store.query().equal(PassDatabase_.name, name).build().findFirst()
+
     // Get last openned passwordDatabase
     fun lastOpenned(limit: Long): MutableList<PassDatabase> = 
         store.query().order(PassDatabase_.lastOpen, QueryBuilder.DESCENDING).build().find(0, limit)

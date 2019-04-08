@@ -13,4 +13,6 @@ object PassDatabaseRepository {
     fun save(db: PassDatabase) = PassDatabaseDao.save(db)
 
     fun findById(id: Long) = PassDatabaseDao.findById(id)
+
+    fun findByName(name: String) = PassDatabaseDao.findByName(name)
 }

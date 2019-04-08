@@ -65,7 +65,13 @@ class FileWorker(
         val uriLocal = copyToLocal(uri, fileName)?:let { return Result.failure() }
 
         // Save the file to pass database
-        val passDb = PassDatabase(fileName, uriLocal, uri, provider, Date())
+        var dbName = fileName
+        var counter = 1
+        while(PassDatabaseRepository.findByName(dbName) != null) {
+            dbName = "$fileName ($counter)"
+            counter++
+        }
+        val passDb = PassDatabase(dbName, uriLocal, uri, provider, Date())
         PassDatabaseRepository.save(passDb)
         Log.i(App.TAG, "Inserted password database : $passDb")
 
