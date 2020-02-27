@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@+id/start"
+        motion:duration="250"
+        motion:motionInterpolator="linear">
+
+        <OnClick motion:targetId="@+id/motion_layout_item_kfile" />
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@+id/txt_kfile_name"
+            motion:layout_constraintEnd_toStartOf="@id/img_kfile_provider"
+            motion:layout_constraintHorizontal_bias="0.0"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/txt_kfile_location"
+            motion:layout_constraintBottom_toTopOf="@id/text_input_kfile_password"
+            motion:layout_constraintEnd_toStartOf="@id/img_kfile_provider"
+            motion:layout_constraintHorizontal_bias="0.0"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@id/txt_kfile_name" />
+        <Constraint
+            android:id="@+id/img_kfile_provider"
+            motion:layout_constraintBottom_toTopOf="@id/text_input_kfile_password"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/text_input_kfile_password"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toBottomOf="@id/txt_kfile_location" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end"
+        motion:deriveConstraintsFrom="@id/start">
+        <Constraint
+            android:id="@+id/text_input_kfile_password"
+            android:visibility="visible"/>
+    </ConstraintSet>
+</MotionScene>

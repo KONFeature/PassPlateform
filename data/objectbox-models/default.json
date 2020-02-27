@@ -1,0 +1,58 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:4544303763910172210",
+      "lastPropertyId": "6:6991942630665335173",
+      "name": "KFileDataEntity",
+      "properties": [
+        {
+          "id": "1:1835969920622662185",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8440925436470928104",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:7096234164103122807",
+          "name": "path",
+          "type": 9
+        },
+        {
+          "id": "4:2614337364928204323",
+          "name": "localPath",
+          "type": 9
+        },
+        {
+          "id": "5:2791721410988923789",
+          "name": "lastOpen",
+          "type": 10
+        },
+        {
+          "id": "6:6991942630665335173",
+          "name": "localUpdate",
+          "type": 1,
+          "flags": 2
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "1:4544303763910172210",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

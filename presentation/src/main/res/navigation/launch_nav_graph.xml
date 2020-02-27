@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/launch_nav_graph"
+    app:startDestination="@+id/launchKFilesFragment">
+
+    <fragment
+        android:id="@+id/launchKFilesFragment"
+        android:name="com.nivelais.kpass.presentation.ui.launch.LaunchKFilesFragment"
+        android:label="LaunchKFilesFragment">
+        <action
+            android:id="@+id/action_launchKFilesFragment_to_createKFileDialog"
+            app:destination="@id/createKFileDialog" />
+        <action
+            android:id="@+id/action_launchKFilesFragment_to_removeKFileDialog"
+            app:destination="@id/removeKFileDialog" />
+        <action
+            android:id="@+id/action_launchKFilesFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+        <action
+            android:id="@+id/action_launchKFilesFragment_to_importKFileDialog"
+            app:destination="@id/importKFileDialog" />
+        <action
+            android:id="@+id/action_launchKFilesFragment_to_openKFileDialog"
+            app:destination="@id/openKFileDialog" />
+    </fragment>
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.nivelais.kpass.presentation.ui.main.MainActivity"
+        android:label="main_activity"
+        tools:layout="@layout/main_activity">
+        <argument
+            android:name="kfile"
+            app:argType="com.nivelais.kpass.domain.entities.KFileEntity" />
+    </activity>
+    <dialog
+        android:id="@+id/createKFileDialog"
+        android:name="com.nivelais.kpass.presentation.ui.manage.CreateKFileDialog"
+        android:label="CreateKFileDialog">
+        <action
+            android:id="@+id/action_createKFileDialog_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </dialog>
+    <dialog
+        android:id="@+id/removeKFileDialog"
+        android:name="com.nivelais.kpass.presentation.ui.manage.RemoveKFileDialog"
+        android:label="RemoveKFileDialog">
+        <argument
+            android:name="kfile"
+            app:argType="com.nivelais.kpass.domain.entities.KFileEntity" />
+    </dialog>
+    <dialog
+        android:id="@+id/importKFileDialog"
+        android:name="com.nivelais.kpass.presentation.ui.manage.ImportKFileDialog"
+        android:label="ImportKFileDialog">
+        <action
+            android:id="@+id/action_importKFileDialog_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </dialog>
+    <dialog
+        android:id="@+id/openKFileDialog"
+        android:name="com.nivelais.kpass.presentation.ui.manage.OpenKFileDialog"
+        android:label="OpenKFileDialog">
+        <argument
+            android:name="kfile"
+            app:argType="com.nivelais.kpass.domain.entities.KFileEntity" />
+        <action
+            android:id="@+id/action_openKFileDialog_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </dialog>
+</navigation>

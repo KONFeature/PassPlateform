@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">PassPlateform</string>
+
+
+    <string name="btn_launch_import">Import</string>
+    <string name="btn_launch_create">New</string>
+
+    <!-- Create KFile dialog -->
+    <string name="title_dialog_create">Create a new KFile</string>
+    <string name="btn_dialog_create_validate">Create</string>
+    <string name="hint_dialog_create_name">Name</string>
+    <string name="hint_dialog_create_password">Master password</string>
+
+    <!-- Import KFile dialog -->
+    <string name="title_dialog_import">Import a KFile</string>
+    <string name="btn_dialog_import_validate">Import</string>
+
+    <!-- Open KFile dialog -->
+    <string name="title_dialog_open">Open %s</string>
+    <string name="hint_dialog_open_password">Password</string>
+    <string name="btn_dialog_open">Open</string>
+
+    <!-- Remove KFile dialog -->
+    <string name="title_dialog_remove">Are you sure to delete %s ?</string>
+    <string name="btn_dialog_remove_validate">Delete</string>
+    <string name="btn_dialog_remove_cancel">Cancel</string>
+    <string name="txt_dialog_remove_location">Location : %s</string>
+    <string name="txt_dialog_remove_provider">Provider : %s</string>
+    <string name="txt_dialog_remove_last_openned">Last time open : %s</string>
+    <string name="switch_dialog_remove_file">Remove the file with it ?</string>
+
+    <!-- Providers-->
+    <string name="provider_app_storage">Application</string>
+    <string name="provider_filesystem">File System</string>
+    <string name="provider_gdrive">Google Drive</string>
+    <string name="provider_http">HTTP</string>
+    <string name="provider_ssh">SSH</string>
+
+    <!-- Common text -->
+    <string name="common_advanced">Advanced</string>
+</resources>
