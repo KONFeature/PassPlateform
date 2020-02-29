@@ -14,9 +14,8 @@ object ObjectBox {
         private set
 
     fun init(context: Context): BoxStore {
-        if (ObjectBox::boxStore.isInitialized && !boxStore.isClosed) {
+        if (ObjectBox::boxStore.isInitialized && !boxStore.isClosed)
             return boxStore
-        }
 
         boxStore = MyObjectBox.builder()
             .androidContext(context.applicationContext)

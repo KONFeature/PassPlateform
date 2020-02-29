@@ -1,6 +1,8 @@
 package com.nivelais.kpass.data.repository
 
 import com.nivelais.kpass.data.db.KFileDataEntity
+import com.nivelais.kpass.data.db.MyObjectBox
+import com.nivelais.kpass.data.db.ObjectBox
 import com.nivelais.kpass.data.helper.KeepassHelper
 import com.nivelais.kpass.data.mapper.KFileDataEntityMapper
 import com.nivelais.kpass.domain.entities.KFileEntity
@@ -8,10 +10,12 @@ import com.nivelais.kpass.domain.exception.CreateException
 import com.nivelais.kpass.domain.exception.RemoveKFileException
 import com.nivelais.kpass.domain.repository.KFilesManagerRepository
 import io.objectbox.Box
+import io.objectbox.BoxStore
+import io.objectbox.kotlin.boxFor
 import java.io.File
 
 class KFilesManagerRepositoryImpl(
-    val dao: Box<KFileDataEntity>,
+    boxStore: BoxStore,
     internalDir: File
 ) : KFilesManagerRepository {
 
@@ -24,6 +28,11 @@ class KFilesManagerRepositoryImpl(
      * Local storage for the newly created kfile
      */
     private val localStorage = File(internalDir, "kfiles")
+
+    /**
+     * Access to our database
+     */
+    private val dao: Box<KFileDataEntity> = boxStore.boxFor()
 
     /**
      * Mapper for our database entity

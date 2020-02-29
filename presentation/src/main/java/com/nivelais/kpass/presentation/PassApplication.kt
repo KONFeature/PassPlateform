@@ -19,7 +19,7 @@ class PassApplication : Application() {
         startKoin {
             androidLogger(Level.DEBUG)
             androidContext(this@PassApplication)
-            modules(listOf(repositoryModule, objectboxModule, useCasesModule, viewModelModule))
+            modules(listOf(objectboxModule, repositoryModule, useCasesModule, viewModelModule))
         }
     }
 }

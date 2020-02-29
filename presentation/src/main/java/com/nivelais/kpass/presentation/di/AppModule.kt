@@ -2,6 +2,8 @@ package com.nivelais.kpass.presentation.di
 
 import com.nivelais.kpass.data.db.ObjectBox
 import com.nivelais.kpass.data.repository.KFilesManagerRepositoryImpl
+import com.nivelais.kpass.domain.repository.KFilesExplorerRepository
+import com.nivelais.kpass.domain.repository.KFilesManagerRepository
 import com.nivelais.kpass.domain.usecases.explorer.OpenKFileUseCase
 import com.nivelais.kpass.domain.usecases.manager.CreateKFileUseCase
 import com.nivelais.kpass.domain.usecases.manager.ImportKFileUseCase
@@ -14,11 +16,19 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
+
 /**
- * Modul for all the repository implementation
+ * Module pour la base de donée
+ */
+val objectboxModule = module {
+    single { ObjectBox.init(androidContext()) }
+}
+
+/**
+ * Module for all the repository implementation
  */
 val repositoryModule = module {
-    single { KFilesManagerRepositoryImpl(get(), androidContext().filesDir) }
+    single { KFilesManagerRepositoryImpl(get(), androidContext().filesDir) as KFilesManagerRepository }
 }
 
 /**
@@ -42,11 +52,4 @@ val viewModelModule = module {
     viewModel { LaunchViewModel(get()) }
     viewModel { ManageKFileViewModel(get(), get(), get(), get()) }
     viewModel { MainViewModel() }
-}
-
-/**
- * Module pour la base de donée
- */
-val objectboxModule = module {
-    single { ObjectBox.init(androidContext()) }
 }
